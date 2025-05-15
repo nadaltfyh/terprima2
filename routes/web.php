@@ -4,24 +4,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\AuthController;
 
-// Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Public Routes - Content Upload Form
 Route::get('/content', [ContentController::class, 'create'])->name('contents.create');
 Route::post('/upload', [ContentController::class, 'store'])->name('contents.upload');
 
-// Protected Routes - CMS
-// Route utama diarahkan ke /content, bisa diakses publik
 Route::get('/', function () {
     return redirect('/content');
 });
 
 Route::middleware(['auth'])->group(function () {
 
-    // Rute dengan parameter harus didefinisikan setelah rute statis
     Route::get('/contents/search', [ContentController::class, 'search'])->name('contents.search');
     Route::get('/contents/completed', [ContentController::class, 'completed'])->name('contents.completed');
     Route::get('/contents', [ContentController::class, 'index'])->name('contents.index');
