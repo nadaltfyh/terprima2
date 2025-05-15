@@ -14,10 +14,12 @@ Route::get('/content', [ContentController::class, 'create'])->name('contents.cre
 Route::post('/upload', [ContentController::class, 'store'])->name('contents.upload');
 
 // Protected Routes - CMS
+// Route utama diarahkan ke /content, bisa diakses publik
+Route::get('/', function () {
+    return redirect('/content');
+});
+
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', function () {
-        return redirect('/content');
-    });
 
     // Rute dengan parameter harus didefinisikan setelah rute statis
     Route::get('/contents/search', [ContentController::class, 'search'])->name('contents.search');
