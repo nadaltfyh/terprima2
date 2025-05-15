@@ -20,9 +20,9 @@
             </div>
         </div>
 
-        <div class="lg:w-2/3 w-full p-6 sm:p-10 flex flex-col justify-between lg:mt-20">
-            <div>
-                <h2 class="text-2xl font-bold mb-6 text-gray-700">DATA UPLOAD TERPRIMA</h2>
+        <div class="lg:w-2/3 w-full p-6 sm:p-10 flex flex-col justify-between mt-10 lg:mt-20">
+        <div>
+                <h2 class="text-2xl font-bold mb-6 text-gray-700">PORTAL SOCIAL MEDIA CONTENT COLLECTION TERPRIMA</h2>
 
                 <form action="{{ route('contents.upload') }}" method="POST" enctype="multipart/form-data">
                     @csrf
