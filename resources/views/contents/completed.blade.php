@@ -62,8 +62,9 @@
                     <th class="p-2">Judul</th>
                     <th class="p-2">Deskripsi</th>
                     <th class="p-2">Media</th>
-                    <!-- <th class="p-2">Status</th> -->
-                    <th class="p-2">Action</th>
+<th class="p-2">Tanggal Upload</th>
+<!-- <th class="p-2">Status</th> -->
+<th class="p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -78,6 +79,7 @@
                     <td class="p-2">{{ $content->judul }}</td>
                     <td class="p-2">{{ Str::limit($content->deskripsi, 50) }}</td>
                     <td class="p-2 text-center">{{ $content->media->count() ?? 0 }}</td>
+<td class="p-2">{{ $content->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
                     <!-- <td class="p-2">
                         <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
                             Ditinjau
