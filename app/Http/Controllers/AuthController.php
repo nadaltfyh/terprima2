@@ -44,7 +44,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->intended('/contents');
+        return redirect()->intended('/dashboard');
     }
 
     /**
