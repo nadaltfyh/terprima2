@@ -228,7 +228,12 @@
                         
                         if (media.file_path) {
                             mediaGrid.innerHTML += `
-                            <div class="bg-gray-100 p-4 rounded flex flex-col items-center justify-center relative group cursor-pointer" onclick="previewImage('/storage/${media.file_path}', '${media.caption ? media.caption.replace(/'/g, '\\'') : ''}')">
+                            <div class="bg-gray-100 p-4 rounded flex flex-col items-center justify-center relative group cursor-pointer">
+    <img src="/storage/${media.file_path}" alt="" class="h-12 object-contain" onclick="event.stopPropagation(); previewImage('/storage/${media.file_path}', '${media.caption ? media.caption.replace(/'/g, '\\'') : ''}')">
+    <button type="button" class="absolute top-1 right-1 bg-white/80 rounded p-1 shadow group-hover:block hidden" onclick="event.stopPropagation(); downloadSingleMedia('${media.id}')">
+        <i class="fa fa-download"></i>
+    </button>
+</div>
                                 <img src="/storage/${media.file_path}" alt="" class="h-12 object-contain">
                                 <button type="button" class="absolute top-1 right-1 bg-white/80 rounded p-1 shadow group-hover:block hidden" onclick="event.stopPropagation(); downloadSingleMedia('${media.id}')">
                                     <i class="fa fa-download"></i>

@@ -122,7 +122,17 @@
                 <textarea name="deskripsi" id="editDeskripsi" class="w-full border p-2 rounded mb-4" rows="4" placeholder="Deskripsi"></textarea>
 
                 <div id="mediaGrid" class="grid grid-cols-4 md:grid-cols-6 gap-2 mb-4">
-                </div>
+<!-- JS will populate this -->
+</div>
+
+<!-- Modal Preview Gambar -->
+<div id="imagePreviewModal" class="fixed inset-0 bg-black/70 bg-opacity-70 hidden items-center justify-center z-50">
+    <div class="relative bg-white rounded-xl shadow-lg p-4 max-w-2xl w-full flex flex-col items-center">
+        <button class="absolute top-2 right-2 text-gray-500 hover:text-black" onclick="closeImagePreview()">&times;</button>
+        <img id="previewImage" src="" alt="Preview" class="max-h-[70vh] object-contain rounded mb-2">
+        <div id="previewCaption" class="text-gray-600 text-center mt-2"></div>
+    </div>
+</div>
 
                 <div class="flex items-center mb-4">
                     <input type="checkbox" id="editStatus" name="status" class="w-5 h-5 text-red-700 border-gray-300 rounded focus:ring-red-700">
@@ -170,15 +180,15 @@
                         console.log("Media file_path:", media.file_path);
                         
                         if (media.file_path) {
-                            mediaGrid.innerHTML += `
-                            <div class="bg-gray-100 p-4 rounded flex flex-col items-center justify-center relative group">
-                                <img src="/storage/${media.file_path}" alt="" class="h-12 object-contain">
-                                <button type="button" class="absolute top-1 right-1 bg-white/80 rounded p-1 shadow group-hover:block hidden" onclick="event.stopPropagation(); downloadSingleMedia('${media.id}')">
-                                    <i class="fa fa-download"></i>
-                                </button>
-                            </div>
-                            `;
-                        }
+    mediaGrid.innerHTML += `
+    <div class=\"bg-gray-100 p-4 rounded flex flex-col items-center justify-center relative group cursor-pointer\">
+        <img src=\"/storage/${media.file_path}\" alt=\"\" class=\"h-12 object-contain\" onclick=\"event.stopPropagation(); previewImage('/storage/${media.file_path}', '${media.caption ? media.caption.replace(/'/g, '\\'') : ''}')\">
+        <button type=\"button\" class=\"absolute top-1 right-1 bg-white/80 rounded p-1 shadow group-hover:block hidden\" onclick=\"event.stopPropagation(); downloadSingleMedia('${media.id}')\">
+            <i class=\"fa fa-download\"></i>
+        </button>
+    </div>
+    `;
+}
                     });
                 } else {
                     mediaGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">Tidak ada media</div>';
@@ -194,32 +204,36 @@
     }
 
     document.getElementById('editForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const id = document.getElementById('contentId').value;
-
-        fetch(`/contents/${id}/update`, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: this.name.value,
-                satuan: this.satuan.value,
-                pilar: this.pilar.value,
-                judul: this.judul.value,
-                deskripsi: this.deskripsi.value,
-                status: this.status.checked ? 1 : 0
-            })
+    e.preventDefault();
+    const id = document.getElementById('contentId').value;
+    fetch(`/contents/${id}/update`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: this.name.value,
+            satuan: this.satuan.value,
+            pilar: this.pilar.value,
+            judul: this.judul.value,
+            deskripsi: this.deskripsi.value,
+            status: this.status.checked ? 1 : 0
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                location.reload();
-            }
-        });
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        }
     });
-    
+});
+
+    document.getElementById('downloadZipBtn').addEventListener('click', function() {
+    const contentId = document.getElementById('contentId').value;
+    window.location.href = `/contents/${contentId}/download-media`;
+});
+
     document.querySelectorAll('.delete-content').forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -270,6 +284,25 @@
             }
         }
     });
+// Fungsi preview gambar
+function previewImage(url, caption) {
+    const modal = document.getElementById('imagePreviewModal');
+    const img = document.getElementById('previewImage');
+    const cap = document.getElementById('previewCaption');
+    img.src = url;
+    cap.textContent = caption || '';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+function closeImagePreview() {
+    const modal = document.getElementById('imagePreviewModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+// Fungsi download satu gambar (pastikan endpoint ada di backend)
+function downloadSingleMedia(mediaId) {
+    window.location.href = `/media/${mediaId}/download`;
+}
 </script>
 
 </div>
