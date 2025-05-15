@@ -142,7 +142,7 @@
                 </div>
 
                 <div class="flex items-center mb-4">
-                    <input type="checkbox" id="editStatus" name="status" class="w-5 h-5 text-red-700 border-gray-300 rounded focus:ring-red-700">
+                    <input type="checkbox" id="editStatus" name="status" value="1" class="w-5 h-5 text-red-700 border-gray-300 rounded focus:ring-red-700">
                     <label for="editStatus" class="ml-2 text-gray-700">Sudah ditinjau</label>
                 </div>
 
@@ -199,70 +199,121 @@
     });
 
     function openEditModal(id) {
-        fetch(`/contents/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log("Data dari server:", data);
-                document.getElementById('contentId').value = data.id;
-                document.getElementById('editName').value = data.name;
-                document.getElementById('editSatuan').value = data.satuan;
-                document.getElementById('editPilar').value = data.pilar;
-                document.getElementById('editJudul').value = data.judul;
-                document.getElementById('editDeskripsi').value = data.deskripsi;
-                document.getElementById('editStatus').checked = data.status;
+    // Fix: Added quotes around the URL string
+    fetch(`/contents/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Data dari server:", data);
+            document.getElementById('contentId').value = data.id;
+            document.getElementById('editName').value = data.name;
+            document.getElementById('editSatuan').value = data.satuan;
+            document.getElementById('editPilar').value = data.pilar;
+            document.getElementById('editJudul').value = data.judul;
+            document.getElementById('editDeskripsi').value = data.deskripsi;
+            document.getElementById('editStatus').checked = data.status;
 
-                const mediaGrid = document.getElementById('mediaGrid');
-                mediaGrid.innerHTML = '';
-                
-                if (data.media && data.media.length > 0) {
-                    data.media.forEach(media => {
-                        console.log("Media URL:", media.url);
-                        console.log("Media file_path:", media.file_path);
-                        
-                        if (media.file_path) {
-                            mediaGrid.innerHTML += `
-                            <div class="bg-gray-100 p-4 rounded flex items-center justify-center">
-                                <img src="/storage/${media.file_path}" alt="" class="h-12 object-contain">
+            const mediaGrid = document.getElementById('mediaGrid');
+            mediaGrid.innerHTML = '';
+            
+            if (data.media && data.media.length > 0) {
+                data.media.forEach(media => {
+                    const mediaElement = document.createElement('div');
+                    mediaElement.className = 'bg-gray-100 p-2 rounded flex flex-col items-center relative group';
+                    
+                    // Determine file type and display accordingly
+                    const fileExt = media.file_path.split('.').pop().toLowerCase();
+                    let previewContent = '';
+                    
+                    if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExt)) {
+                        previewContent = `<img src="/storage/${media.file_path}" alt="" class="h-20 w-full object-contain">`;
+                    } else if (['mp4', 'mov'].includes(fileExt)) {
+                        previewContent = `
+                            <video class="h-20 w-full object-contain">
+                                <source src="/storage/${media.file_path}" type="video/${fileExt}">
+                                Browser tidak mendukung video.
+                            </video>
+                        `;
+                    } else if (fileExt === 'pdf') {
+                        previewContent = `
+                            <div class="h-20 w-full flex items-center justify-center bg-white">
+                                <i class="fas fa-file-pdf text-4xl text-red-500"></i>
                             </div>
-                            `;
-                        }
-                    });
-                } else {
-                    mediaGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">Tidak ada media</div>';
-                }
+                        `;
+                    } else {
+                        previewContent = `
+                            <div class="h-20 w-full flex items-center justify-center bg-white">
+                                <i class="fas fa-file text-4xl text-gray-500"></i>
+                            </div>
+                        `;
+                    }
+                    
+                    mediaElement.innerHTML = `
+                        ${previewContent}
+                        <div class="mt-2 text-xs text-center truncate w-full">${media.file_path.split('/').pop()}</div>
+                        <a href="/contents/${media.id}/download-media" 
+                           class="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fas fa-download text-xs"></i>
+                        </a>
+                    `;
+                    
+                    mediaGrid.appendChild(mediaElement);
+                });
+            } else {
+                mediaGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">Tidak ada media</div>';
+            }
 
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            });
-    }
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        })
+        .catch(error => {
+            console.error('Error fetching content:', error);
+            alert('Error loading content. Please try again.');
+        });
+}
+
 
     function closeModal() {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
 
-    // Handle form submission with page reload
+
     document.getElementById('editForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        const id = document.getElementById('contentId').value;
-        
-        fetch(`/contents/${id}`, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                'X-HTTP-Method-Override': 'PUT'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                closeModal();
-                window.location.reload(); // Reload the page after successful update
-            }
-        });
+    e.preventDefault();
+    const formData = new FormData(this);
+    const id = document.getElementById('contentId').value;
+    
+    // Add CSRF token to formData instead of headers - this is important for multipart/form-data
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // Make sure we're not adding duplicate tokens if the form already has a CSRF field
+    if (!formData.has('_token')) {
+        formData.append('_token', token);
+    }
+    
+    fetch(`/contents/${id}/update`, {
+        method: 'POST',
+        body: formData
+        // Don't set Content-Type header when sending FormData - the browser will set it automatically with proper boundaries
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            closeModal();
+            window.location.reload(); // Reload the page after successful update
+        } else {
+            alert('Update failed: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating content. Please try again.');
     });
+});
 
     // Download ZIP functionality
     document.getElementById('downloadZipBtn').addEventListener('click', function() {
