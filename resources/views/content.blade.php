@@ -12,23 +12,23 @@
 <body class="bg-white text-gray-700">
     <div class="flex flex-col lg:flex-row min-h-screen">
 
-        <!-- Gambar header untuk tampilan HP -->
         <div class="block lg:hidden">
             <img src="{{ asset('img/header.png') }}" alt="Header TerPRIMA" class="w-full">
         </div>
 
-        <!-- Background image untuk tampilan besar -->
         <div class="lg:w-1/3 w-full bg-no-repeat bg-center bg-cover text-white flex flex-col justify-between pt-28 lg:pt-10 px-6 hidden lg:flex"
              style="background-image: url('{{ asset('img/bg.png') }}');">
             <div></div>
-            <div class="text-sm text-center text-gray-200 hidden lg:block">
-                <p>&copy; 2025 - <span class="font-bold">TerPRIMA</span></p>
+            <div class="text-sm text-center text-gray-400 mt-8 lg:hidden">
+                <p>Copyright © TerPRIMA. 2025. Supported by Point of View</p>
             </div>
         </div>
 
         <div class="lg:w-2/3 w-full p-6 sm:p-10 flex flex-col justify-between mt-10 lg:mt-20">
         <div>
-                <h2 class="text-2xl font-bold mb-6 text-gray-700">PORTAL SOCIAL MEDIA CONTENT COLLECTION TERPRIMA</h2>
+        <h2 class="text-2xl font-bold mb-6 text-gray-700 text-center lg:text-left">
+            PORTAL SOCIAL MEDIA CONTENT COLLECTION TERPRIMA
+        </h2>
 
                 <form action="{{ route('contents.upload') }}" method="POST" enctype="multipart/form-data">
                     @csrf

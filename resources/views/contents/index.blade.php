@@ -56,7 +56,7 @@
             <thead class="bg-gray-100">
                 <tr>
                     <th class="p-2"><input type="checkbox" id="selectAll"></th>
-                    <th class="p-2">Name</th>
+                    <th class="p-2">Nama</th>
                     <th class="p-2">Satuan</th>
                     <th class="p-2">Pilar</th>
                     <th class="p-2">Judul</th>
