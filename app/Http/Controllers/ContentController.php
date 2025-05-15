@@ -112,7 +112,7 @@ class ContentController extends Controller
         $totalContents = Content::count();
         $completedContents = Content::where('status', true)->count();
         $pendingContents = $totalContents - $completedContents;
-        $totalMedia = \App\Models\Media::count();
+        $totalMedia = \App\Models\media::count();
         
         return view('dashboard', compact('totalContents', 'completedContents', 'pendingContents', 'totalMedia'));
     }
