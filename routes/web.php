@@ -4,14 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ContentController;
 use App\Http\Controllers\AuthController;
 
+
+Route::get('/content', [ContentController::class, 'create'])->name('contents.create');
+Route::post('/upload', [ContentController::class, 'store'])->name('contents.upload');
+
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Public Routes - Content Upload Form
-Route::get('/content', [ContentController::class, 'create'])->name('contents.create');
-Route::post('/upload', [ContentController::class, 'store'])->name('contents.upload');
 
 // Protected Routes - CMS
 Route::middleware(['auth'])->group(function () {

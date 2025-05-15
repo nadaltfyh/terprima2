@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Content;
+use App\Models\content;
 use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
