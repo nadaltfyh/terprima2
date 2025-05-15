@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\content;
-use App\Models\media;
+use App\Models\Content;
+use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
@@ -112,7 +112,7 @@ class ContentController extends Controller
         $totalContents = Content::count();
         $completedContents = Content::where('status', true)->count();
         $pendingContents = $totalContents - $completedContents;
-        $totalMedia = \App\Models\media::count();
+        $totalMedia = \App\Models\Media::count();
         
         return view('dashboard', compact('totalContents', 'completedContents', 'pendingContents', 'totalMedia'));
     }
