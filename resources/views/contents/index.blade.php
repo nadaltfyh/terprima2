@@ -138,8 +138,16 @@
             </div>
 
                 <div id="mediaGrid" class="grid grid-cols-4 md:grid-cols-6 gap-2 mb-4">
-                    <!-- JS will populate this -->
-                </div>
+<!-- JS will populate this -->
+</div>
+<!-- Modal Preview Gambar -->
+<div id="imagePreviewModal" class="fixed inset-0 bg-black/70 bg-opacity-70 hidden items-center justify-center z-50">
+    <div class="relative bg-white rounded-xl shadow-lg p-4 max-w-2xl w-full flex flex-col items-center">
+        <button class="absolute top-2 right-2 text-gray-500 hover:text-black" onclick="closeImagePreview()">&times;</button>
+        <img id="previewImage" src="" alt="Preview" class="max-h-[70vh] object-contain rounded mb-2">
+        <div id="previewCaption" class="text-gray-600 text-center mt-2"></div>
+    </div>
+</div>
 
                 <div class="flex items-center mb-4">
                     <input type="checkbox" id="editStatus" name="status" class="w-5 h-5 text-red-700 border-gray-300 rounded focus:ring-red-700">
@@ -147,10 +155,9 @@
                 </div>
 
                 <div class="flex justify-end gap-2">
-                    <!-- <button type="button" class="bg-red-700 text-white px-4 py-2 rounded" onclick="closeModal()">Keluar</button> -->
-                    <button type="submit" class="bg-sky-700 text-white px-4 py-2 rounded">Simpan</button>
-                    <button type="button" id="downloadZipBtn" class="bg-green-700 text-white px-4 py-2 rounded">Unduh ZIP</button>
-                </div>
+    <button type="button" id="downloadZipBtn" class="bg-green-700 text-white px-4 py-2 rounded">Unduh ZIP</button>
+    <button type="submit" class="bg-sky-700 text-white px-4 py-2 rounded">Simpan</button>
+</div>
             </form>
         </div>
     </div>
@@ -221,8 +228,11 @@
                         
                         if (media.file_path) {
                             mediaGrid.innerHTML += `
-                            <div class="bg-gray-100 p-4 rounded flex items-center justify-center">
+                            <div class="bg-gray-100 p-4 rounded flex flex-col items-center justify-center relative group cursor-pointer" onclick="previewImage('/storage/${media.file_path}', '${media.caption ? media.caption.replace(/'/g, '\\'') : ''}')">
                                 <img src="/storage/${media.file_path}" alt="" class="h-12 object-contain">
+                                <button type="button" class="absolute top-1 right-1 bg-white/80 rounded p-1 shadow group-hover:block hidden" onclick="event.stopPropagation(); downloadSingleMedia('${media.id}')">
+                                    <i class="fa fa-download"></i>
+                                </button>
                             </div>
                             `;
                         }
@@ -414,6 +424,21 @@
             console.error(err);
         });
     }
+// Fungsi preview gambar
+function previewImage(url, caption) {
+    const modal = document.getElementById('imagePreviewModal');
+    const img = document.getElementById('previewImage');
+    const cap = document.getElementById('previewCaption');
+    img.src = url;
+    cap.textContent = caption || '';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+function closeImagePreview() {
+    const modal = document.getElementById('imagePreviewModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
 </script>
 
 </div>

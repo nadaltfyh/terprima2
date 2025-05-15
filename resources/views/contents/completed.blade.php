@@ -56,22 +56,22 @@
             <thead class="bg-gray-100">
                 <tr>
                     <th class="p-2"><input type="checkbox" id="selectAll"></th>
-                    <th class="p-2">Nama</th>
+                    <th class="p-2">Name</th>
                     <th class="p-2">Satuan</th>
                     <th class="p-2">Pilar</th>
                     <th class="p-2">Judul</th>
                     <th class="p-2">Deskripsi</th>
                     <th class="p-2">Media</th>
-                    <th class="p-2">Tanggal Upload</th>
-                    <!-- <th class="p-2">Status</th> -->
-                    <th class="p-2">Action</th>
+<th class="p-2">Tanggal Upload</th>
+<!-- <th class="p-2">Status</th> -->
+<th class="p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($contents as $content)
                 <tr class="border-t border-gray-100 hover:bg-gray-50 cursor-pointer content-row" data-id="{{ $content->id }}">
                     <td class="p-2" onclick="event.stopPropagation()">
-                        <input type="checkbox" class="content-checkbox" value="{{ $content->id }}" {{ $content->status ? 'checked' : '' }}>
+                        <input type="checkbox" class="content-checkbox" value="{{ $content->id }}">
                     </td>
                     <td class="p-2">{{ $content->name }}</td>
                     <td class="p-2">{{ $content->satuan }}</td>
@@ -130,7 +130,7 @@
                 </div>
 
                 <div class="flex justify-end gap-2">
-                    <button type="button" class="bg-red-700 text-white px-4 py-2 rounded" onclick="closeModal()">Keluar</button>
+                    <button type="button" id="downloadZipBtn" class="bg-green-700 text-white px-4 py-2 rounded">Unduh ZIP</button>
                     <button type="submit" class="bg-sky-700 text-white px-4 py-2 rounded">Simpan</button>
                 </div>
             </form>
@@ -171,8 +171,11 @@
                         
                         if (media.file_path) {
                             mediaGrid.innerHTML += `
-                            <div class="bg-gray-100 p-4 rounded flex items-center justify-center">
+                            <div class="bg-gray-100 p-4 rounded flex flex-col items-center justify-center relative group">
                                 <img src="/storage/${media.file_path}" alt="" class="h-12 object-contain">
+                                <button type="button" class="absolute top-1 right-1 bg-white/80 rounded p-1 shadow group-hover:block hidden" onclick="event.stopPropagation(); downloadSingleMedia('${media.id}')">
+                                    <i class="fa fa-download"></i>
+                                </button>
                             </div>
                             `;
                         }
