@@ -12,8 +12,14 @@
 <body class="bg-white text-gray-700">
     <div class="flex flex-col lg:flex-row min-h-screen">
 
-    <div class="lg:w-1/3 w-full bg-no-repeat bg-center bg-cover text-white flex flex-col justify-between pt-28 lg:pt-10 px-6"
-     style="background-image: url('{{ asset('img/bg.png') }}');">
+        <!-- Gambar header untuk tampilan HP -->
+        <div class="block lg:hidden">
+            <img src="{{ asset('img/header.png') }}" alt="Header TerPRIMA" class="w-full">
+        </div>
+
+        <!-- Background image untuk tampilan besar -->
+        <div class="lg:w-1/3 w-full bg-no-repeat bg-center bg-cover text-white flex flex-col justify-between pt-28 lg:pt-10 px-6 hidden lg:flex"
+             style="background-image: url('{{ asset('img/bg.png') }}');">
             <div></div>
             <div class="text-sm text-center text-gray-200 hidden lg:block">
                 <p>&copy; 2025 - <span class="font-bold">TerPRIMA</span></p>
