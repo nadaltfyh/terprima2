@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\content;
+use App\Models\media;
 use Illuminate\Support\Facades\Storage;
 
 class ContentController extends Controller
