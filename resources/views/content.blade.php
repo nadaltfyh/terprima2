@@ -85,8 +85,9 @@
             </div>
 
             <div class="text-sm text-center text-gray-400 mt-8 lg:hidden">
-                <p>&copy; 2025 - <span class="font-bold">TerPRIMA</span></p>
-            </div>
+            <p>Copyright © TerPRIMA. 2025. Supported by Point of View</p>
+        </div>
+
         </div>
     </div>
 
