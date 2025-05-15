@@ -448,13 +448,76 @@ function closeImagePreview() {
 
 </div>
 <script>
-// Seluruh JS event modal, download, preview, simpan, delete, bulk action, dll
 document.addEventListener('DOMContentLoaded', function() {
     const modal = document.getElementById('editModal');
-    const downloadZipBtn = document.getElementById('downloadZipBtn');
-    const editForm = document.getElementById('editForm');
-    // ... (seluruh event handler dari file ini, gabungkan di sini)
+
+    // Klik baris untuk buka modal edit
+    document.querySelectorAll('.content-row').forEach(row => {
+        row.addEventListener('click', function() {
+            const id = row.getAttribute('data-id');
+            openEditModal(id);
+        });
+    });
+
+    // Tombol hapus per baris
+    document.querySelectorAll('.delete-content').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const id = button.getAttribute('data-id');
+            openDeleteModal(id);
+        });
+    });
+
+    // Submit form edit
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const id = document.getElementById('contentId').value;
+        fetch(`/contents/${id}`, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'X-HTTP-Method-Override': 'PUT'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeModal();
+                window.location.reload();
+            }
+        });
+    });
+
+    // Download ZIP
+    document.getElementById('downloadZipBtn').addEventListener('click', function() {
+        const contentId = document.getElementById('contentId').value;
+        window.location.href = `/contents/${contentId}/download-media`;
+    });
+
+    // Select all checkbox
+    document.getElementById('selectAll').addEventListener('change', function() {
+        const isChecked = this.checked;
+        document.querySelectorAll('.content-checkbox').forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+    });
+
+    // Bulk action
+    document.getElementById('applyBulkAction').addEventListener('click', function() {
+        const action = document.getElementById('bulkAction').value;
+        if (action === 'delete') {
+            const selectedIds = Array.from(document.querySelectorAll('.content-checkbox:checked')).map(cb => cb.value);
+            if (selectedIds.length === 0) {
+                alert('Pilih setidaknya satu konten untuk dihapus');
+                return;
+            }
+            openBulkDeleteModal(selectedIds);
+        }
+    });
 });
+</script>
 // Fungsi preview gambar, close preview, download satu gambar
 function previewImage(url, caption) {
     const modal = document.getElementById('imagePreviewModal');
