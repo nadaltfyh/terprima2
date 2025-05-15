@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Content;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class ContentController extends Controller
 {
@@ -55,23 +56,62 @@ class ContentController extends Controller
         return view('contents.edit', compact('content'));
     }
 
+
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name'      => 'required|string|max:255',
-            'satuan'    => 'required|string|max:255',
-            'pilar'     => 'required|string|max:255',
-            'judul'     => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'status'    => 'nullable|boolean',
-        ]);
-
-        $content = Content::findOrFail($id);
-        $content->update($request->only(['name', 'satuan', 'pilar', 'judul', 'deskripsi', 'status']));
-
-        return redirect()->route('contents.index')->with('success', 'Konten berhasil diperbarui!');
+        try {
+            $request->validate([
+                'name'      => 'required|string|max:255',
+                'satuan'    => 'required|string|max:255',
+                'pilar'     => 'required|string|max:255',
+                'judul'     => 'required|string|max:255',
+                'deskripsi' => 'required|string',
+                'status'    => 'nullable|boolean',
+            ]);
+        
+            $content = Content::findOrFail($id);
+            
+            // Handle status checkbox dengan lebih lengkap
+            // Fungsi ini memeriksa semua nilai yang mungkin dari checkbox
+            $status = false; // nilai default
+            
+            if ($request->has('status')) {
+                $statusValue = $request->status;
+                // Kemungkinan nilai checkbox: "on", 1, "1", true, "true"
+                if (in_array($statusValue, ['on', 1, '1', true, 'true'], true)) {
+                    $status = true;
+                }
+                // Log nilai status yang diterima untuk debugging
+                Log::info('Status value received: ' . var_export($statusValue, true));
+            }
+            
+            // Log status final untuk memastikan nilainya benar
+            Log::info('Final status set to: ' . ($status ? '1' : '0'));
+            
+            $content->name = $request->name;
+            $content->satuan = $request->satuan;
+            $content->pilar = $request->pilar;
+            $content->judul = $request->judul;
+            $content->deskripsi = $request->deskripsi;
+            $content->status = $status;
+            
+            $content->save();
+        
+            return response()->json([
+                'success' => true,
+                'message' => 'Konten berhasil diperbarui!'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Content update error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui konten: ' . $e->getMessage()
+            ], 500);
+        }
     }
-
+        
+    
     public function showJson($id)
     {
         $content = Content::with('media')->findOrFail($id);
@@ -203,6 +243,18 @@ class ContentController extends Controller
         
         return redirect()->back()->with('error', 'Gagal membuat file ZIP');
     }
+
+    public function downloadIndividualMedia($id)
+{
+    $media = \App\Models\Media::findOrFail($id);
+    $filePath = storage_path('app/public/' . $media->file_path);
+    
+    if (!file_exists($filePath)) {
+        abort(404);
+    }
+    
+    return response()->download($filePath);
+}
     
     public function bulkDelete(Request $request)
     {

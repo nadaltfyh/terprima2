@@ -25,6 +25,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Rute dengan parameter harus didefinisikan setelah rute statis
     Route::get('/contents/search', [ContentController::class, 'search'])->name('contents.search');
+    Route::get('/media/download/{id}', [ContentController::class, 'downloadIndividualMedia'])->name('media.download');
     Route::get('/contents/completed', [ContentController::class, 'completed'])->name('contents.completed');
     Route::get('/contents', [ContentController::class, 'index'])->name('contents.index');
     Route::post('/contents', [ContentController::class, 'store'])->name('contents.store');
@@ -32,7 +33,10 @@ Route::middleware(['auth'])->group(function () {
     // Rute dengan parameter
     Route::get('/contents/{id}/edit', [ContentController::class, 'edit'])->name('contents.edit');
     Route::get('/contents/{id}/json', [ContentController::class, 'showJson']);
+    
+    // Fix: Remove duplicate route definition
     Route::post('/contents/{id}/update', [ContentController::class, 'update'])->name('contents.update');
+    
     Route::delete('/contents/{id}', [ContentController::class, 'destroy'])->name('contents.destroy');
     Route::get('/contents/{id}/download-media', [ContentController::class, 'downloadMedia'])->name('contents.download-media');
     Route::post('/contents/bulk-delete', [ContentController::class, 'bulkDelete'])->name('contents.bulk-delete');
