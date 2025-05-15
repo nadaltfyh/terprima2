@@ -47,7 +47,7 @@
                 <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-50 ml-5 mt-3">
             </div>
             <nav class="flex-1 p-4 space-y-2">
-                <a href="/" class="flex items-center px-3 py-2 rounded hover:bg-gray-100">
+                <a href="/dashboard" class="flex items-center px-3 py-2 rounded hover:bg-gray-100">
                     <span class="material-icons mr-2">home</span> Beranda
                 </a>
                 <a href="{{ route('contents.index') }}" class="flex items-center px-3 py-2 rounded hover:bg-gray-100">
