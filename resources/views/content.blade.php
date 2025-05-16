@@ -24,8 +24,8 @@
             </div>
         </div>
 
-        <div class="lg:w-2/3 w-full p-6 sm:p-10 flex flex-col justify-between mt-10 lg:mt-20">
-        <div>
+        <div class="lg:w-2/3 w-full p-6 sm:p-10 flex flex-col justify-between mt-10 lg:mt-20 ml-100">
+        <div class="w-[100%] lg:w-[80%]">
         <h2 class="text-2xl font-bold mb-6 text-gray-700 text-center lg:text-left">
             PORTAL SOCIAL MEDIA CONTENT COLLECTION TERPRIMA
         </h2>
