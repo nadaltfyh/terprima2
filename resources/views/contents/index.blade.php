@@ -250,11 +250,12 @@
                     mediaElement.innerHTML = `
                         ${previewContent}
                         <div class="mt-2 text-xs text-center truncate w-full">${media.file_path.split('/').pop()}</div>
-                        <a href="/contents/${media.id}/download-media" 
-                           class="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                        <a href="/storage/${media.file_path}" 
+                        download="${media.file_path.split('/').pop()}"
+                        class="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                             <i class="fas fa-download text-xs"></i>
                         </a>
-                    `;
+                    `;                    
                     
                     mediaGrid.appendChild(mediaElement);
                 });
