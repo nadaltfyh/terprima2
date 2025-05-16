@@ -179,12 +179,14 @@
         </div>
     </div>
 
-    <div id="imagePreviewModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50">
-        <div class="relative max-w-3xl w-full p-4">
-            <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-white text-xl">✕</button>
-            <img id="previewImage" src="" class="max-h-[80vh] w-auto mx-auto rounded-lg shadow-lg" />
-        </div>
+    <div id="imagePreviewModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50">
+    <div class="relative bg-white rounded-xl p-2 max-w-xl w-full shadow-lg">
+        <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl z-10">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="previewImage" src="" class="max-h-[70vh] w-auto mx-auto rounded-lg object-contain" />
     </div>
+</div>
 
 <script>
     const modal = document.getElementById('editModal');
