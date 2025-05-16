@@ -179,6 +179,13 @@
         </div>
     </div>
 
+    <div id="imagePreviewModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50">
+        <div class="relative max-w-3xl w-full p-4">
+            <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-white text-xl">✕</button>
+            <img id="previewImage" src="" class="max-h-[80vh] w-auto mx-auto rounded-lg shadow-lg" />
+        </div>
+    </div>
+
 <script>
     const modal = document.getElementById('editModal');
     
@@ -199,7 +206,6 @@
     });
 
     function openEditModal(id) {
-    // Fix: Added quotes around the URL string
     fetch(`/contents/${id}`)
         .then(res => res.json())
         .then(data => {
@@ -225,8 +231,11 @@
                     let previewContent = '';
                     
                     if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExt)) {
-                        previewContent = `<img src="/storage/${media.file_path}" alt="" class="h-20 w-full object-contain">`;
-                    } else if (['mp4', 'mov'].includes(fileExt)) {
+                        previewContent = `<img src="/storage/${media.file_path}" 
+                            alt="" 
+                            class="h-20 w-full object-contain cursor-pointer previewable" 
+                            data-src="/storage/${media.file_path}">`;    
+                        } else if (['mp4', 'mov'].includes(fileExt)) {
                         previewContent = `
                             <video class="h-20 w-full object-contain">
                                 <source src="/storage/${media.file_path}" type="video/${fileExt}">
@@ -249,7 +258,6 @@
                     
                     mediaElement.innerHTML = `
                         ${previewContent}
-                        <div class="mt-2 text-xs text-center truncate w-full">${media.file_path.split('/').pop()}</div>
                         <a href="/storage/${media.file_path}" 
                         download="${media.file_path.split('/').pop()}"
                         class="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
@@ -465,6 +473,25 @@
             console.error(err);
         });
     }
+
+    document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('previewable')) {
+        const src = e.target.getAttribute('data-src');
+        const previewModal = document.getElementById('imagePreviewModal');
+        const previewImage = document.getElementById('previewImage');
+        previewImage.src = src;
+        previewModal.classList.remove('hidden');
+        previewModal.classList.add('flex');
+        }
+    });
+
+        function closeImagePreview() {
+            const previewModal = document.getElementById('imagePreviewModal');
+            previewModal.classList.add('hidden');
+            previewModal.classList.remove('flex');
+            document.getElementById('previewImage').src = '';
+        }
+
 </script>
 
 </div>
