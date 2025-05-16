@@ -51,7 +51,7 @@
     </div>
 </form>
 
-    <div class="overflow-x-auto rounded-xl border border-gray-100">
+<div class="overflow-x-auto rounded-xl border border-gray-100">
         <table class="min-w-full text-sm text-left">
             <thead class="bg-gray-100">
                 <tr>
@@ -62,15 +62,16 @@
                     <th class="p-2">Judul</th>
                     <th class="p-2">Deskripsi</th>
                     <th class="p-2">Media</th>
-<th class="p-2">Tanggal Upload</th>
-<!-- <th class="p-2">Status</th> -->
-<th class="p-2">Action</th>
+                    <th class="p-2">Tanggal Upload</th>
+                    <!-- <th class="p-2">Status</th> -->
+                    <th class="p-2">Action</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($contents as $content)
                 <tr class="border-t border-gray-100 hover:bg-gray-50 cursor-pointer content-row" data-id="{{ $content->id }}">
                     <td class="p-2" onclick="event.stopPropagation()">
+                        <!-- Changed: Remove the status check from checkbox, this is only for selection -->
                         <input type="checkbox" class="content-checkbox" value="{{ $content->id }}">
                     </td>
                     <td class="p-2">{{ $content->name }}</td>
@@ -80,9 +81,10 @@
                     <td class="p-2">{{ Str::limit($content->deskripsi, 50) }}</td>
                     <td class="p-2 text-center">{{ $content->media->count() ?? 0 }}</td>
 <td class="p-2">{{ $content->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
+                    <!-- Uncommented: Show status visually -->
                     <!-- <td class="p-2">
-                        <span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                            Ditinjau
+                        <span class="px-2 py-1 rounded-full text-xs {{ $content->status ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                            {{ $content->status ? 'Ditinjau' : 'Belum ditinjau' }}
                         </span>
                     </td> -->
                     <td class="p-2" onclick="event.stopPropagation()">
@@ -98,6 +100,7 @@
             </tbody>
         </table>
     </div>
+
 
     <div class="mt-4">
         {{ $contents->links() }}
