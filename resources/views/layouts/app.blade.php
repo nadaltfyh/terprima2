@@ -61,7 +61,7 @@
 
         <!-- Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
-        <header class="relative w-full"> 
+        <header class="relative w-full h-[80px]"> 
             <div class="absolute top-0 left-0 w-full bg-white z-0"></div>
             <img src="{{ asset('img/header_cms.png') }}" alt="Header" class="absolute top-0 left-0 h-full w-full object-cover z-10">
             <div class="relative z-20 flex items-center justify-between h-full px-6">
