@@ -77,7 +77,7 @@
                         <div id="dropdownMenu" class="dropdown-content z-50">
                             <div class="px-4 py-3 text-sm text-gray-900 border-b">
                                 <div class="font-medium">{{ Auth::user()->name }}</div>
-                                <div class="truncate">NRP: {{ Auth::user()->nrp }}</div>
+                                <!-- <div class="truncate">NRP: {{ Auth::user()->nrp }}</div> -->
                             </div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
