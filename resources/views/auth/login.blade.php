@@ -11,7 +11,7 @@
     <div class="flex flex-col lg:flex-row min-h-screen">
         <!-- Header for mobile -->
         <div class="block lg:hidden">
-            <img src="{{ asset('img/logo.png') }}" alt="Logo TerPRIMA" class="w-full max-w-[200px] mx-auto mt-6">
+            <img src="{{ asset('img/header.png') }}" alt="Logo TerPRIMA" class="w-full max-w-[200px] mx-auto mt-6">
         </div>
 
         <!-- Form section -->
