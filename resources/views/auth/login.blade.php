@@ -8,14 +8,16 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body class="relative">
-    <div class="flex h-screen">
-        <!-- Form section - full width on mobile, half on desktop -->
-        <div class="w-full md:w-1/2 bg-white p-6 md:p-10 flex items-center justify-center">
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Header for mobile -->
+        <div class="block lg:hidden">
+            <img src="{{ asset('img/logo.png') }}" alt="Logo TerPRIMA" class="w-full max-w-[200px] mx-auto mt-6">
+        </div>
+
+        <!-- Form section -->
+        <div class="lg:w-1/2 w-full bg-white p-6 lg:p-10 flex items-center justify-center">
             <div class="w-full max-w-md">
-                <!-- Logo - only shows on mobile -->
-                <div class="block md:hidden mb-8 text-center">
-                    <img src="{{ asset('img/logo.png') }}" alt="Logo" class="mx-auto h-24">
-                </div>
+
                 
                 <h2 class="text-2xl font-bold text-gray-800 mb-2 text-left">Selamat Datang</h2>
                 <p class="mb-10 text-gray-600 text-left">Silahkan masukkan nama dan NRP</p>
@@ -56,8 +58,8 @@
             </div>
         </div>
 
-        <!-- Background section - hidden on mobile, half width on desktop -->
-        <div class="hidden md:flex w-1/2 bg-center bg-cover text-white flex-col justify-between p-10" 
+        <!-- Background section - hidden on mobile -->
+        <div class="lg:w-1/2 w-full bg-center bg-cover text-white flex-col justify-between p-10 hidden lg:flex" 
             style="background-image: url('{{ asset('img/bg_login.png') }}');"></div>
     </div>
 </body>
