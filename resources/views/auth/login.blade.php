@@ -17,9 +17,14 @@
         <!-- Form section -->
         <div class="lg:w-1/2 w-full bg-white p-6 lg:p-10 flex items-center justify-center">
             <div class="w-full max-w-md">
+            <div></div>
+            <div class="text-sm text-center text-gray-400 mt-8 lg:hidden">
+                <p>Copyright © TerPRIMA. 2025. Supported by Point of View</p>
+            </div>
+        </div>
 
                 
-                <h2 class="text-2xl font-bold text-gray-800 mb-2 text-left">Selamat Datang</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-6 text-left">Selamat Datang</h2>
                 <p class="mb-10 text-gray-600 text-left">Silahkan masukkan nama dan NRP</p>
 
                 @if ($errors->any())
