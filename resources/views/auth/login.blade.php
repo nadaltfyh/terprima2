@@ -17,11 +17,6 @@
         <!-- Form section -->
         <div class="lg:w-1/2 w-full bg-white p-6 lg:p-10 flex items-center justify-center">
             <div class="w-full max-w-md">
-            <div></div>
-            <div class="text-sm text-center text-gray-400 mt-8 lg:hidden">
-                <p>Copyright © TerPRIMA. 2025. Supported by Point of View</p>
-            </div>
-        </div>
 
                 
                 <h2 class="text-2xl font-bold text-gray-800 mb-6 text-left">Selamat Datang</h2>
@@ -48,9 +43,14 @@
                         </div>
                         
                         <div class="mb-6 w-full">
-                            <label for="nrp" class="block text-gray-700 text-sm font-bold mb-2 text-left">NRP (Nomor Registrasi Pokok)</label>
-                            <input id="nrp" type="text" name="nrp" required
-                                class="shadow appearance-none border rounded-lg w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                            <label for="password" class="block text-gray-700 text-sm font-bold mb-2 text-left">Kata Sandi</label>
+                            <div class="relative">
+                                <input id="password" type="password" name="password" required
+                                    class="shadow appearance-none border rounded-lg w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline pr-10">
+                                <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 px-3 flex items-center">
+                                    <span class="material-icons text-gray-600" id="toggleIcon">visibility_off</span>
+                                </button>
+                            </div>
                         </div>
                         
                         <div class="w-full">
@@ -67,5 +67,19 @@
         <div class="lg:w-1/2 w-full bg-center bg-cover text-white flex-col justify-between p-10 hidden lg:flex" 
             style="background-image: url('{{ asset('img/bg_login.png') }}');"></div>
     </div>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = 'visibility';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = 'visibility_off';
+            }
+        }
+    </script>
 </body>
 </html>
