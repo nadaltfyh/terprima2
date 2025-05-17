@@ -29,20 +29,14 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'nrp' => 'required|string',
+            'password' => 'required|string',
         ]);
 
-        $user = User::where('name', $request->name)
-                    ->where('nrp', $request->nrp)
-                    ->first();
-
-        if (!$user) {
+        if (!Auth::attempt($request->only('name', 'password'))) {
             throw ValidationException::withMessages([
-                'name' => ['Nama atau NRP tidak valid.'],
+                'name' => ['Nama atau kata sandi tidak valid.'],
             ]);
         }
-
-        Auth::login($user);
 
         return redirect()->intended('/dashboard');
     }
