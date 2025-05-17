@@ -83,7 +83,7 @@
                                 @csrf
                                 <button type="submit" class="flex w-full items-center text-red-600 hover:bg-gray-100">
                                     <span class="material-icons mr-2" style="font-size: 18px; color:red;">logout</span>
-                                    Logout
+                                    Keluar
                                 </button>
                             </form>
                         </div>
