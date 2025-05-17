@@ -8,10 +8,11 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body class="relative">
-    <div class="flex h-screen md:flex-row flex-col">
-        <div class="w-full md:w-1/2 bg-white p-6 md:p-10 flex items-center justify-center order-2 md:order-1">
+    <div class="flex h-screen">
+        <!-- Form section - full width on mobile, half on desktop -->
+        <div class="w-full md:w-1/2 bg-white p-6 md:p-10 flex items-center justify-center">
             <div class="w-full max-w-md">
-                <!-- Logo untuk tampilan mobile -->
+                <!-- Logo - only shows on mobile -->
                 <div class="block md:hidden mb-8 text-center">
                     <img src="{{ asset('img/logo.png') }}" alt="Logo" class="mx-auto h-24">
                 </div>
@@ -55,7 +56,8 @@
             </div>
         </div>
 
-        <div class="w-full md:w-1/2 bg-center bg-cover text-white flex-none md:flex md:flex-col justify-between p-10 order-1 md:order-2 h-32 md:h-auto" 
+        <!-- Background section - hidden on mobile, half width on desktop -->
+        <div class="hidden md:flex w-1/2 bg-center bg-cover text-white flex-col justify-between p-10" 
             style="background-image: url('{{ asset('img/bg_login.png') }}');"></div>
     </div>
 </body>
