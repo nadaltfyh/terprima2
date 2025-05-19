@@ -17,8 +17,8 @@
                 <option value="">Bulk action</option>
                 <option value="delete">Delete</option>
             </select>
-            <button type="button" id="applyBulkAction" class="bg-red-700 text-white px-4 h-8 text-sm rounded">Apply</button>
-        </div>
+            <button type="button" id="applyBulkAction" class="bg-red-700 hover:bg-red-800 text-white px-4 h-8 text-sm rounded">Apply</button>
+            </div>
 
         <div class="flex items-center gap-2 flex-wrap">
 
@@ -35,7 +35,7 @@
                 <option value="Community Engagement">Community Engagement</option>
             </select>
 
-            <button type="submit" class="bg-red-700 text-white px-4 h-8 text-sm rounded">Filter</button>
+            <button type="submit" class="bg-red-700 hover:bg-red-800 text-white px-4 h-8 text-sm rounded">Filter</button>
 
             <div class="relative w-48">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
@@ -90,10 +90,7 @@
                         </span>
                     </td> -->
                     <td class="p-2" onclick="event.stopPropagation()">
-                        <button 
-                            class="text-red-600 hover:text-red-800 delete-content"
-                            data-id="{{ $content->id }}"
-                        >
+                        <<button class="text-red-600 hover:text-red-800 delete-content" data-id="{{ $content->id }}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>

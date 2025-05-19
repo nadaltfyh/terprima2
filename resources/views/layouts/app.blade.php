@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>TerPRIMA CMS</title>
+    <link rel="icon" type="image/png" href="{{ asset('img/logo_web.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
