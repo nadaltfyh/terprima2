@@ -148,9 +148,8 @@
 
                 <div class="flex justify-end gap-2">
                     <!-- <button type="button" class="bg-red-700 text-white px-4 py-2 rounded" onclick="closeModal()">Keluar</button> -->
-                    <button type="submit" class="bg-sky-700 text-white px-4 py-2 rounded">Simpan</button>
-                    <button type="button" id="downloadZipBtn" class="bg-green-700 text-white px-4 py-2 rounded">Unduh ZIP</button>
-                </div>
+                    <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white px-4 py-2 rounded">Simpan</button>
+                    <button type="button" id="downloadZipBtn" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Unduh ZIP</button>                </div>
             </form>
         </div>
     </div>

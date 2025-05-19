@@ -3,7 +3,6 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-<!-- Tag ini ada di index tapi tidak ada di completed -->
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <div class="p-6 bg-white rounded-xl shadow-md">
@@ -83,7 +82,7 @@
                     <td class="p-2">{{ $content->judul }}</td>
                     <td class="p-2">{{ Str::limit($content->deskripsi, 50) }}</td>
                     <td class="p-2 text-center">{{ $content->media->count() ?? 0 }}</td>
-<td class="p-2">{{ $content->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
+                    <td class="p-2">{{ $content->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') }}</td>
                     <!-- Uncommented: Show status visually -->
                     <!-- <td class="p-2">
                         <span class="px-2 py-1 rounded-full text-xs {{ $content->status ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
@@ -148,9 +147,8 @@
 
                 <div class="flex justify-end gap-2">
                     <!-- <button type="button" class="bg-red-700 text-white px-4 py-2 rounded" onclick="closeModal()">Keluar</button> -->
-                    <button type="submit" class="bg-sky-700 text-white px-4 py-2 rounded">Simpan</button>
-                    <button type="button" id="downloadZipBtn" class="bg-green-700 text-white px-4 py-2 rounded">Unduh ZIP</button>
-                </div>
+                    <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white px-4 py-2 rounded">Simpan</button>
+                    <button type="button" id="downloadZipBtn" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Unduh ZIP</button>                </div>
             </form>
         </div>
     </div>
