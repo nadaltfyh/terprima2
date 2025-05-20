@@ -105,19 +105,6 @@
         {{ $contents->links() }}
     </div>
 
-    <div id="mediaPreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-4 rounded-xl max-w-4xl relative">
-            <button class="absolute top-2 right-2 text-gray-500 hover:text-black z-10" onclick="closeMediaPreview()">✕</button>
-            <div id="mediaPreviewContainer" class="max-h-[80vh] max-w-full">
-                <img id="previewImage" src="" alt="Preview" class="max-h-[80vh] max-w-full h-auto hidden">
-                <video id="previewVideo" class="max-h-[80vh] max-w-full h-auto hidden" controls>
-                    <source src="" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-        </div>
-    </div>
-
     <div id="editModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white p-10 rounded-xl w-full max-w-4xl relative">
             <button class="absolute top-3 right-3 text-gray-500 cursor-pointer" onclick="closeModal()">✕</button>
@@ -184,14 +171,26 @@
         </div>
     </div>
 
-    <div id="imagePreviewModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="relative bg-white rounded-xl p-2 max-w-xl w-full shadow-lg">
-        <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl z-10 cursor-pointer">
-            <i class="fas fa-times"></i>
-        </button>
-        <img id="previewImage" src="" class="max-h-[70vh] w-auto mx-auto rounded-lg object-contain" />
+    <div id="imagePreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-4 rounded-xl max-w-4xl w-full relative">
+            <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="previewImage" src="" alt="Preview" class="w-full h-auto">
+        </div>
     </div>
-</div>
+
+    <div id="videoPreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-4 rounded-xl max-w-4xl w-full relative">
+            <button onclick="closeVideoPreview()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+            <video id="previewVideo" controls class="w-full h-auto">
+                <source src="" type="video/mp4">
+                Browser tidak mendukung video.
+            </video>
+        </div>
+    </div>
 
 <script>
     const modal = document.getElementById('editModal');
@@ -241,18 +240,13 @@
                         previewContent = `<img src="/storage/${media.file_path}" 
                             alt="" 
                             class="h-20 w-full object-contain cursor-pointer previewable" 
-                            data-src="/storage/${media.file_path}"
-                            data-type="image">`;    
-                        } else if (['mp4', 'mov'].includes(fileExt)) {
+                            data-src="/storage/${media.file_path}">`;    
+                    } else if (fileExt === 'mp4' || fileExt === 'webm') {
                         previewContent = `
-                            <div class="h-20 w-full object-contain cursor-pointer previewable" 
-                                data-src="/storage/${media.file_path}"
-                                data-type="video">
-                                <video class="h-20 w-full object-contain">
-                                    <source src="/storage/${media.file_path}" type="video/${fileExt}">
-                                    Browser tidak mendukung video.
-                                </video>
-                            </div>
+                            <video class="h-20 w-full previewable cursor-pointer" data-src="/storage/${media.file_path}" data-type="video">
+                                <source src="/storage/${media.file_path}" type="video/${fileExt}">
+                                Browser tidak mendukung video.
+                            </video>
                         `;
                     } else if (fileExt === 'pdf') {
                         previewContent = `
@@ -487,40 +481,43 @@
     }
 
     document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('previewable')) {
-        const src = e.target.getAttribute('data-src');
-        const type = e.target.getAttribute('data-type');
-        const previewModal = document.getElementById('mediaPreviewModal');
-        const previewImage = document.getElementById('previewImage');
-        const previewVideo = document.getElementById('previewVideo');
+        if (e.target.classList.contains('previewable')) {
+            const src = e.target.getAttribute('data-src');
+            const type = e.target.getAttribute('data-type');
 
-        // Hide both media elements initially
-        previewImage.classList.add('hidden');
-        previewVideo.classList.add('hidden');
+            if (type === 'video') {
+                const previewModal = document.getElementById('videoPreviewModal');
+                const previewVideo = document.getElementById('previewVideo');
+                previewVideo.querySelector('source').src = src;
+                previewVideo.load(); // Reload video with new source
+                previewModal.classList.remove('hidden');
+                previewModal.classList.add('flex');
+            } else {
+                const previewModal = document.getElementById('imagePreviewModal');
+                const previewImage = document.getElementById('previewImage');
+                previewImage.src = src;
+                previewModal.classList.remove('hidden');
+                previewModal.classList.add('flex');
+            }
+        }
+    });
 
-        if (type === 'video') {
-            previewVideo.querySelector('source').src = src;
-            previewVideo.classList.remove('hidden');
-            previewVideo.load(); // Required to load the new video source
-        } else {
-            previewImage.src = src;
-            previewImage.classList.remove('hidden');
+        function closeImagePreview() {
+            const previewModal = document.getElementById('imagePreviewModal');
+            previewModal.classList.add('hidden');
+            previewModal.classList.remove('flex');
+            document.getElementById('previewImage').src = '';
         }
 
-        previewModal.classList.remove('hidden');
-        previewModal.classList.add('flex');
-    }
-});
-
-function closeMediaPreview() {
-    const previewModal = document.getElementById('mediaPreviewModal');
-    const previewVideo = document.getElementById('previewVideo');
-    previewModal.classList.add('hidden');
-    previewModal.classList.remove('flex');
-    document.getElementById('previewImage').src = '';
-    previewVideo.pause();
-    previewVideo.querySelector('source').src = '';
-}
+        function closeVideoPreview() {
+            const previewModal = document.getElementById('videoPreviewModal');
+            previewModal.classList.add('hidden');
+            previewModal.classList.remove('flex');
+            const previewVideo = document.getElementById('previewVideo');
+            previewVideo.pause();
+            previewVideo.querySelector('source').src = '';
+            previewVideo.load();
+        }
 
 </script>
 

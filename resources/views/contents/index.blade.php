@@ -173,16 +173,24 @@
         </div>
     </div>
 
-    <div id="mediaPreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-4 rounded-xl max-w-4xl relative">
-            <button class="absolute top-2 right-2 text-gray-500 hover:text-black z-10" onclick="closeMediaPreview()">✕</button>
-            <div id="mediaPreviewContainer" class="max-h-[80vh] max-w-full">
-                <img id="previewImage" src="" alt="Preview" class="max-h-[80vh] max-w-full h-auto hidden">
-                <video id="previewVideo" class="max-h-[80vh] max-w-full h-auto hidden" controls>
-                    <source src="" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
+    <div id="imagePreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-4 rounded-xl max-w-4xl w-full relative">
+            <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+            <img id="previewImage" src="" alt="Preview" class="w-full h-auto">
+        </div>
+    </div>
+
+    <div id="videoPreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-4 rounded-xl max-w-4xl w-full relative">
+            <button onclick="closeVideoPreview()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+            <video id="previewVideo" controls class="w-full h-auto">
+                <source src="" type="video/mp4">
+                Browser tidak mendukung video.
+            </video>
         </div>
     </div>
 
@@ -233,18 +241,14 @@
                             previewContent = `<img src="/storage/${media.file_path}" 
                                 alt="" 
                                 class="h-20 w-full object-contain cursor-pointer previewable" 
-                                data-src="/storage/${media.file_path}"
-                                data-type="image">`;                    
-                        } else if (['mp4', 'mov'].includes(fileExt)) {
+                                data-src="/storage/${media.file_path}">`;                    
+                    
+                        } else if (fileExt === 'mp4' || fileExt === 'webm') {
                             previewContent = `
-                                <div class="h-20 w-full object-contain cursor-pointer previewable" 
-                                    data-src="/storage/${media.file_path}"
-                                    data-type="video">
-                                    <video class="h-20 w-full object-contain">
-                                        <source src="/storage/${media.file_path}" type="video/${fileExt}">
-                                        Browser tidak mendukung video.
-                                    </video>
-                                </div>
+                                <video class="h-20 w-full previewable cursor-pointer" data-src="/storage/${media.file_path}" data-type="video">
+                                    <source src="/storage/${media.file_path}" type="video/${fileExt}">
+                                    Browser tidak mendukung video.
+                                </video>
                             `;
                         } else if (fileExt === 'pdf') {
                             previewContent = `
@@ -268,45 +272,134 @@
                                 <i class="fas fa-download text-xs"></i>
                             </a>
                         `;                    
-                        
+                    
                         mediaGrid.appendChild(mediaElement);
                     });
                 } else {
                     mediaGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">Tidak ada media</div>';
                 }
+                        previewContent = `
+                            <div class="h-20 w-full flex items-center justify-center bg-white">
+                                <i class="fas fa-file-pdf text-4xl text-red-500"></i>
+                            </div>
+                        `;
+                    } else {
+                        previewContent = `
+                            <div class="h-20 w-full flex items-center justify-center bg-white">
+                                <i class="fas fa-file text-4xl text-gray-500"></i>
+                            </div>
+                        `;
+                    }
+                    
+                    mediaElement.innerHTML = `
+                        ${previewContent}
+                        <a href="/storage/${media.file_path}" 
+                        download="${media.file_path.split('/').pop()}"
+                        class="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fas fa-download text-xs"></i>
+                        </a>
+                    `;                    
+                    
+                    mediaGrid.appendChild(mediaElement);
+                });
+            } else {
+                mediaGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">Tidak ada media</div>';
+            }
 
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            })
-            .catch(error => {
-                console.error('Error fetching content:', error);
-                alert('Error loading content. Please try again.');
-            });
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        })
+        .catch(error => {
+            console.error('Error fetching content:', error);
+            alert('Error loading content. Please try again.');
+        });
+}
+
+
+    function closeModal() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }
 
 
-        function closeModal() {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const id = document.getElementById('contentId').value;
+    
+    // Add CSRF token to formData instead of headers - this is important for multipart/form-data
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    // Make sure we're not adding duplicate tokens if the form already has a CSRF field
+    if (!formData.has('_token')) {
+        formData.append('_token', token);
+    }
+    
+    fetch(`/contents/${id}/update`, {
+        method: 'POST',
+        body: formData
+        // Don't set Content-Type header when sending FormData - the browser will set it automatically with proper boundaries
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            closeModal();
+            window.location.reload(); // Reload the page after successful update
+        } else {
+            alert('Update failed: ' + (data.message || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating content. Please try again.');
+    });
+});
 
+    // Download ZIP functionality
+    document.getElementById('downloadZipBtn').addEventListener('click', function() {
+        const contentId = document.getElementById('contentId').value;
+        window.location.href = `/contents/${contentId}/download-media`;
+    });
 
-        document.getElementById('editForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        const id = document.getElementById('contentId').value;
+    // Delete confirmation modal functions
+    function openDeleteModal(id) {
+        const deleteModal = document.getElementById('deleteConfirmModal');
+        deleteModal.classList.remove('hidden');
+        deleteModal.classList.add('flex');
         
-        // Add CSRF token to formData instead of headers - this is important for multipart/form-data
+        document.getElementById('confirmDeleteBtn').onclick = function() {
+            deleteContent(id);
+        };
+    }
+
+    function closeDeleteModal() {
+        const deleteModal = document.getElementById('deleteConfirmModal');
+        deleteModal.classList.add('hidden');
+        deleteModal.classList.remove('flex');
+    }
+
+    // Fixed delete function to handle errors and properly handle the CSRF token
+    function deleteContent(id) {
+        // Get the CSRF token
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        // Make sure we're not adding duplicate tokens if the form already has a CSRF field
-        if (!formData.has('_token')) {
-            formData.append('_token', token);
+        
+        if (!token) {
+            console.error('CSRF token not found');
+            alert('Error: CSRF token not found. Please refresh the page and try again.');
+            return;
         }
         
-        fetch(`/contents/${id}/update`, {
-            method: 'POST',
-            body: formData
-            // Don't set Content-Type header when sending FormData - the browser will set it automatically with proper boundaries
+        fetch(`/contents/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
         })
         .then(response => {
             if (!response.ok) {
@@ -316,206 +409,147 @@
         })
         .then(data => {
             if (data.success) {
-                closeModal();
-                window.location.reload(); // Reload the page after successful update
+                closeDeleteModal();
+                window.location.reload(); // Reload the page after successful delete
             } else {
-                alert('Update failed: ' + (data.message || 'Unknown error'));
+                alert('Failed to delete content: ' + (data.message || 'Unknown error'));
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error updating content. Please try again.');
+            alert('Error deleting content. Please try again.');
+        });
+    }
+
+    // Bulk action functionality
+    document.getElementById('selectAll').addEventListener('change', function() {
+        const isChecked = this.checked;
+        document.querySelectorAll('.content-checkbox').forEach(checkbox => {
+            checkbox.checked = isChecked;
         });
     });
 
-        // Download ZIP functionality
-        document.getElementById('downloadZipBtn').addEventListener('click', function() {
-            const contentId = document.getElementById('contentId').value;
-            window.location.href = `/contents/${contentId}/download-media`;
-        });
-
-        // Delete confirmation modal functions
-        function openDeleteModal(id) {
-            const deleteModal = document.getElementById('deleteConfirmModal');
-            deleteModal.classList.remove('hidden');
-            deleteModal.classList.add('flex');
-            
-            document.getElementById('confirmDeleteBtn').onclick = function() {
-                deleteContent(id);
-            };
-        }
-
-        function closeDeleteModal() {
-            const deleteModal = document.getElementById('deleteConfirmModal');
-            deleteModal.classList.add('hidden');
-            deleteModal.classList.remove('flex');
-        }
-
-        // Fixed delete function to handle errors and properly handle the CSRF token
-        function deleteContent(id) {
-            // Get the CSRF token
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            
-            if (!token) {
-                console.error('CSRF token not found');
-                alert('Error: CSRF token not found. Please refresh the page and try again.');
+    document.getElementById('applyBulkAction').addEventListener('click', function() {
+        const action = document.getElementById('bulkAction').value;
+        if (action === 'delete') {
+            const selectedIds = Array.from(document.querySelectorAll('.content-checkbox:checked')).map(cb => cb.value);
+            if (selectedIds.length === 0) {
+                alert('Pilih setidaknya satu konten untuk dihapus');
                 return;
             }
-            
-            fetch(`/contents/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'X-CSRF-TOKEN': token,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    closeDeleteModal();
-                    window.location.reload(); // Reload the page after successful delete
-                } else {
-                    alert('Failed to delete content: ' + (data.message || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error deleting content. Please try again.');
-            });
+            openBulkDeleteModal(selectedIds);
         }
+    });
 
-        // Bulk action functionality
-        document.getElementById('selectAll').addEventListener('change', function() {
-            const isChecked = this.checked;
-            document.querySelectorAll('.content-checkbox').forEach(checkbox => {
-                checkbox.checked = isChecked;
-            });
-        });
+    function openBulkDeleteModal(ids) {
+        const bulkDeleteModal = document.getElementById('bulkDeleteConfirmModal');
+        bulkDeleteModal.classList.remove('hidden');
+        bulkDeleteModal.classList.add('flex');
+        
+        document.getElementById('confirmBulkDeleteBtn').onclick = function() {
+            bulkDeleteContents(ids);
+        };
+    }
 
-        document.getElementById('applyBulkAction').addEventListener('click', function() {
-            const action = document.getElementById('bulkAction').value;
-            if (action === 'delete') {
-                const selectedIds = Array.from(document.querySelectorAll('.content-checkbox:checked')).map(cb => cb.value);
-                if (selectedIds.length === 0) {
-                    alert('Pilih setidaknya satu konten untuk dihapus');
-                    return;
-                }
-                openBulkDeleteModal(selectedIds);
+    function closeBulkDeleteModal() {
+        const bulkDeleteModal = document.getElementById('bulkDeleteConfirmModal');
+        bulkDeleteModal.classList.add('hidden');
+        bulkDeleteModal.classList.remove('flex');
+    }
+
+    // Fixed bulk delete function to properly handle errors
+    function bulkDeleteContents(ids) {
+        // Get the CSRF token
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        
+        if (!token) {
+            console.error('CSRF token not found');
+            alert('Error: CSRF token not found. Please refresh the page and try again.');
+            return;
+        }
+        
+        fetch('/contents/bulk-delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ ids: ids })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        });
-
-        function openBulkDeleteModal(ids) {
-            const bulkDeleteModal = document.getElementById('bulkDeleteConfirmModal');
-            bulkDeleteModal.classList.remove('hidden');
-            bulkDeleteModal.classList.add('flex');
-            
-            document.getElementById('confirmBulkDeleteBtn').onclick = function() {
-                bulkDeleteContents(ids);
-            };
-        }
-
-        function closeBulkDeleteModal() {
-            const bulkDeleteModal = document.getElementById('bulkDeleteConfirmModal');
-            bulkDeleteModal.classList.add('hidden');
-            bulkDeleteModal.classList.remove('flex');
-        }
-
-        // Fixed bulk delete function to properly handle errors
-        function bulkDeleteContents(ids) {
-            // Get the CSRF token
-            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            
-            if (!token) {
-                console.error('CSRF token not found');
-                alert('Error: CSRF token not found. Please refresh the page and try again.');
-                return;
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                closeBulkDeleteModal();
+                window.location.reload(); // Reload the page after successful bulk delete
+            } else {
+                alert('Failed to delete contents: ' + (data.message || 'Unknown error'));
             }
-            
-            fetch('/contents/bulk-delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': token,
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ ids: ids })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    closeBulkDeleteModal();
-                    window.location.reload(); // Reload the page after successful bulk delete
-                } else {
-                    alert('Failed to delete contents: ' + (data.message || 'Unknown error'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error deleting contents. Please try again.');
-            });
-        }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting contents. Please try again.');
+        });
+    }
 
-        function copyToClipboard(elementId) {
-            const el = document.getElementById(elementId);
-            el.select();
-            el.setSelectionRange(0, 99999); 
+    function copyToClipboard(elementId) {
+        const el = document.getElementById(elementId);
+        el.select();
+        el.setSelectionRange(0, 99999); 
 
-            navigator.clipboard.writeText(el.value).then(() => {
-                alert("Teks berhasil disalin!");
-            }).catch(err => {
-                alert("Gagal menyalin teks");
-                console.error(err);
-            });
-        }
+        navigator.clipboard.writeText(el.value).then(() => {
+            alert("Teks berhasil disalin!");
+        }).catch(err => {
+            alert("Gagal menyalin teks");
+            console.error(err);
+        });
+    }
 
-        document.addEventListener('click', function (e) {
+    document.addEventListener('click', function (e) {
         if (e.target.classList.contains('previewable')) {
             const src = e.target.getAttribute('data-src');
             const type = e.target.getAttribute('data-type');
-            const previewModal = document.getElementById('mediaPreviewModal');
-            const previewImage = document.getElementById('previewImage');
-            const previewVideo = document.getElementById('previewVideo');
-
-            // Hide both media elements initially
-            previewImage.classList.add('hidden');
-            previewVideo.classList.add('hidden');
 
             if (type === 'video') {
+                const previewModal = document.getElementById('videoPreviewModal');
+                const previewVideo = document.getElementById('previewVideo');
                 previewVideo.querySelector('source').src = src;
-                previewVideo.classList.remove('hidden');
-                previewVideo.load(); // Required to load the new video source
+                previewVideo.load(); // Reload video with new source
+                previewModal.classList.remove('hidden');
+                previewModal.classList.add('flex');
             } else {
+                const previewModal = document.getElementById('imagePreviewModal');
+                const previewImage = document.getElementById('previewImage');
                 previewImage.src = src;
-                previewImage.classList.remove('hidden');
+                previewModal.classList.remove('hidden');
+                previewModal.classList.add('flex');
             }
-
-            previewModal.classList.remove('hidden');
-            previewModal.classList.add('flex');
         }
     });
 
-    function closeMediaPreview() {
-        const previewModal = document.getElementById('mediaPreviewModal');
-        const previewVideo = document.getElementById('previewVideo');
-        previewModal.classList.add('hidden');
-        previewModal.classList.remove('flex');
-        document.getElementById('previewImage').src = '';
-        previewVideo.pause();
-        previewVideo.querySelector('source').src = '';
-    }
+        function closeImagePreview() {
+            const previewModal = document.getElementById('imagePreviewModal');
+            previewModal.classList.add('hidden');
+            previewModal.classList.remove('flex');
+            document.getElementById('previewImage').src = '';
+        }
 
-    </script>
+        function closeVideoPreview() {
+            const previewModal = document.getElementById('videoPreviewModal');
+            previewModal.classList.add('hidden');
+            previewModal.classList.remove('flex');
+            const previewVideo = document.getElementById('previewVideo');
+            previewVideo.pause();
+            previewVideo.querySelector('source').src = '';
+            previewVideo.load();
+        }
+
+</script>
 
 </div>
 @endsection
