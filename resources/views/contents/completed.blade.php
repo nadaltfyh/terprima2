@@ -172,20 +172,20 @@
     </div>
 
     <div id="imagePreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-4 rounded-xl max-w-4xl w-full relative">
+        <div class="bg-white p-4 rounded-xl max-w-2xl w-full relative">
             <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
                 <i class="fas fa-times"></i>
             </button>
-            <img id="previewImage" src="" alt="Preview" class="w-full h-auto">
+            <img id="previewImage" src="" alt="Preview" class="w-full h-auto max-h-[70vh] object-contain">
         </div>
     </div>
 
     <div id="videoPreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white p-4 rounded-xl max-w-4xl w-full relative">
+        <div class="bg-white p-4 rounded-xl max-w-2xl w-full relative">
             <button onclick="closeVideoPreview()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
                 <i class="fas fa-times"></i>
             </button>
-            <video id="previewVideo" controls class="w-full h-auto">
+            <video id="previewVideo" controls class="w-full h-auto max-h-[70vh]">
                 <source src="" type="video/mp4">
                 Browser tidak mendukung video.
             </video>
