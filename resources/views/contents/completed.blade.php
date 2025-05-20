@@ -90,7 +90,7 @@
                         </span>
                     </td> -->
                     <td class="p-2" onclick="event.stopPropagation()">
-                        <<button class="text-red-600 hover:text-red-800 delete-content cursor-pointer" data-id="{{ $content->id }}">
+                        <button class="text-red-600 hover:text-red-800 delete-content cursor-pointer" data-id="{{ $content->id }}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -103,6 +103,19 @@
 
     <div class="mt-4">
         {{ $contents->links() }}
+    </div>
+
+    <div id="mediaPreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white p-4 rounded-xl max-w-4xl relative">
+            <button class="absolute top-2 right-2 text-gray-500 hover:text-black z-10" onclick="closeMediaPreview()">✕</button>
+            <div id="mediaPreviewContainer" class="max-h-[80vh] max-w-full">
+                <img id="previewImage" src="" alt="Preview" class="max-h-[80vh] max-w-full h-auto hidden">
+                <video id="previewVideo" class="max-h-[80vh] max-w-full h-auto hidden" controls>
+                    <source src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
     </div>
 
     <div id="editModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
@@ -134,7 +147,6 @@
             </div>
 
                 <div id="mediaGrid" class="grid grid-cols-4 md:grid-cols-6 gap-2 mb-4">
-                    <!-- JS will populate this -->
                 </div>
 
                 <div class="flex items-center mb-4">
@@ -150,7 +162,6 @@
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
     <div id="deleteConfirmModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white p-6 rounded-xl w-full max-w-md relative">
             <h3 class="text-lg font-semibold mb-4">Konfirmasi Hapus</h3>
@@ -162,7 +173,6 @@
         </div>
     </div>
 
-    <!-- Bulk Delete Confirmation Modal -->
     <div id="bulkDeleteConfirmModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white p-6 rounded-xl w-full max-w-md relative">
             <h3 class="text-lg font-semibold mb-4">Konfirmasi Hapus Massal</h3>
@@ -231,13 +241,18 @@
                         previewContent = `<img src="/storage/${media.file_path}" 
                             alt="" 
                             class="h-20 w-full object-contain cursor-pointer previewable" 
-                            data-src="/storage/${media.file_path}">`;    
+                            data-src="/storage/${media.file_path}"
+                            data-type="image">`;    
                         } else if (['mp4', 'mov'].includes(fileExt)) {
                         previewContent = `
-                            <video class="h-20 w-full object-contain">
-                                <source src="/storage/${media.file_path}" type="video/${fileExt}">
-                                Browser tidak mendukung video.
-                            </video>
+                            <div class="h-20 w-full object-contain cursor-pointer previewable" 
+                                data-src="/storage/${media.file_path}"
+                                data-type="video">
+                                <video class="h-20 w-full object-contain">
+                                    <source src="/storage/${media.file_path}" type="video/${fileExt}">
+                                    Browser tidak mendukung video.
+                                </video>
+                            </div>
                         `;
                     } else if (fileExt === 'pdf') {
                         previewContent = `
@@ -474,20 +489,38 @@
     document.addEventListener('click', function (e) {
     if (e.target.classList.contains('previewable')) {
         const src = e.target.getAttribute('data-src');
-        const previewModal = document.getElementById('imagePreviewModal');
+        const type = e.target.getAttribute('data-type');
+        const previewModal = document.getElementById('mediaPreviewModal');
         const previewImage = document.getElementById('previewImage');
-        previewImage.src = src;
+        const previewVideo = document.getElementById('previewVideo');
+
+        // Hide both media elements initially
+        previewImage.classList.add('hidden');
+        previewVideo.classList.add('hidden');
+
+        if (type === 'video') {
+            previewVideo.querySelector('source').src = src;
+            previewVideo.classList.remove('hidden');
+            previewVideo.load(); // Required to load the new video source
+        } else {
+            previewImage.src = src;
+            previewImage.classList.remove('hidden');
+        }
+
         previewModal.classList.remove('hidden');
         previewModal.classList.add('flex');
-        }
-    });
+    }
+});
 
-        function closeImagePreview() {
-            const previewModal = document.getElementById('imagePreviewModal');
-            previewModal.classList.add('hidden');
-            previewModal.classList.remove('flex');
-            document.getElementById('previewImage').src = '';
-        }
+function closeMediaPreview() {
+    const previewModal = document.getElementById('mediaPreviewModal');
+    const previewVideo = document.getElementById('previewVideo');
+    previewModal.classList.add('hidden');
+    previewModal.classList.remove('flex');
+    document.getElementById('previewImage').src = '';
+    previewVideo.pause();
+    previewVideo.querySelector('source').src = '';
+}
 
 </script>
 
