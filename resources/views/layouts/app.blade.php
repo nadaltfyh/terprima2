@@ -48,13 +48,13 @@
                 <img src="{{ asset('img/logo.png') }}" alt="Logo" class="w-50 ml-5 mt-3">
             </div>
             <nav class="flex-1 p-4 space-y-2">
-                <a href="/dashboard" class="flex items-center px-3 py-2 rounded hover:bg-gray-100 {{ request()->is('dashboard') ? 'bg-red-50 text-red-700' : '' }}">
+                <a href="/dashboard" class="flex items-center px-3 py-2 rounded hover:bg-red-700 hover:text-white {{ request()->is('dashboard') ? 'bg-red-700 text-white' : '' }}">
                     <span class="material-icons mr-2">home</span> Beranda
                 </a>
-                <a href="{{ route('contents.index') }}" class="flex items-center px-3 py-2 rounded hover:bg-gray-100 {{ request()->routeIs('contents.index') ? 'bg-red-50 text-red-700' : '' }}">
+                <a href="{{ route('contents.index') }}" class="flex items-center px-3 py-2 rounded hover:bg-red-700 hover:text-white {{ request()->routeIs('contents.index') ? 'bg-red-700 text-white' : '' }}">
                     <span class="material-icons mr-2">list</span> Daftar Konten
                 </a>
-                <a href="{{ route('contents.completed') }}" class="flex items-center px-3 py-2 rounded hover:bg-gray-100 {{ request()->routeIs('contents.completed') ? 'bg-red-50 text-red-700' : '' }}">
+                <a href="{{ route('contents.completed') }}" class="flex items-center px-3 py-2 rounded hover:bg-red-700 hover:text-white {{ request()->routeIs('contents.completed') ? 'bg-red-700 text-white' : '' }}">
                     <span class="material-icons mr-2">check_circle</span> Konten Terselesaikan
                 </a>
             </nav>
