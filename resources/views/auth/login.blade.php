@@ -55,7 +55,7 @@
                         </div>
                         
                         <div class="w-full">
-                            <button type="submit" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg w-full focus:outline-none focus:shadow-outline">
+                            <button type="submit" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-lg w-full focus:outline-none focus:shadow-outline cursor-pointer">
                                 Masuk
                             </button>
                         </div>

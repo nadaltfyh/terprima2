@@ -18,7 +18,7 @@
                 <option value="">Bulk action</option>
                 <option value="delete">Delete</option>
             </select>
-            <button type="button" id="applyBulkAction" class="bg-red-700 hover:bg-red-800 text-white px-4 h-8 text-sm rounded">Apply</button>
+            <button type="button" id="applyBulkAction" class="bg-red-700 hover:bg-red-800 text-white px-4 h-8 text-sm rounded cursor-pointer">Apply</button>
             </div>
 
         <div class="flex items-center gap-2 flex-wrap">
@@ -36,7 +36,7 @@
                 <option value="Community Engagement">Community Engagement</option>
             </select>
 
-            <button type="submit" class="bg-red-700 hover:bg-red-800 text-white px-4 h-8 text-sm rounded">Filter</button>
+            <button type="submit" class="bg-red-700 hover:bg-red-800 text-white px-4 h-8 text-sm rounded cursor-pointer">Filter</button>
 
             <div class="relative w-48">
                 <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
@@ -92,7 +92,7 @@
                         </span>
                     </td> -->
                     <td class="p-2" onclick="event.stopPropagation()">
-                    <button class="text-red-600 hover:text-red-800 delete-content" data-id="{{ $content->id }}">
+                    <button class="text-red-600 hover:text-red-800 delete-content cursor-pointer" data-id="{{ $content->id }}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -108,7 +108,7 @@
 
     <div id="editModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white p-10 rounded-xl w-full max-w-4xl relative">
-            <button class="absolute top-3 right-3 text-gray-500" onclick="closeModal()">✕</button>
+            <button class="absolute top-3 right-3 text-gray-500 cursor-pointer" onclick="closeModal()">✕</button>
 
             <form id="editForm">
                 @csrf
@@ -122,14 +122,14 @@
 
                 <div class="relative mb-4">
                 <input name="judul" id="editJudul" class="w-full border p-2 rounded pr-10" placeholder="Judul">
-                <button type="button" onclick="copyToClipboard('editJudul')" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black">
+                <button type="button" onclick="copyToClipboard('editJudul')" class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black cursor-pointer">
                     <i class="fa-solid fa-clipboard"></i>
                 </button>
             </div>
 
             <div class="relative mb-4">
                 <textarea name="deskripsi" id="editDeskripsi" class="w-full border p-2 rounded pr-10" rows="4" placeholder="Deskripsi"></textarea>
-                <button type="button" onclick="copyToClipboard('editDeskripsi')" class="absolute right-2 top-2 text-gray-500 hover:text-black">
+                <button type="button" onclick="copyToClipboard('editDeskripsi')" class="absolute right-2 top-2 text-gray-500 hover:text-black cursor-pointer">
                     <i class="fa-solid fa-clipboard"></i>
                 </button>
             </div>
@@ -139,14 +139,14 @@
                 </div>
 
                 <div class="flex items-center mb-4">
-                    <input type="checkbox" id="editStatus" name="status" value="1" class="w-5 h-5 text-red-700 border-gray-300 rounded focus:ring-red-700">
+                    <input type="checkbox" id="editStatus" name="status" value="1" class="w-5 h-5 text-red-700 border-gray-300 rounded focus:ring-red-700 cursor-pointer">
                     <label for="editStatus" class="ml-2 text-gray-700">Sudah ditinjau</label>
                 </div>
 
                 <div class="flex justify-end gap-2">
                     <!-- <button type="button" class="bg-red-700 text-white px-4 py-2 rounded" onclick="closeModal()">Keluar</button> -->
-                    <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white px-4 py-2 rounded">Simpan</button>
-                    <button type="button" id="downloadZipBtn" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded">Unduh ZIP</button>                </div>
+                    <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white px-4 py-2 rounded cursor-pointer">Simpan</button>
+                    <button type="button" id="downloadZipBtn" class="bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded cursor-pointer">Unduh ZIP</button>                </div>
             </form>
         </div>
     </div>
@@ -167,15 +167,15 @@
             <h3 class="text-lg font-semibold mb-4">Konfirmasi Hapus Massal</h3>
             <p class="mb-6">Apakah Anda yakin ingin menghapus semua konten yang dipilih?</p>
             <div class="flex justify-end gap-2">
-                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded" onclick="closeBulkDeleteModal()">Batal</button>
-                <button type="button" id="confirmBulkDeleteBtn" class="bg-red-700 text-white px-4 py-2 rounded">Hapus</button>
+                <button type="button" class="bg-gray-300 text-gray-800 px-4 py-2 rounded cursor-pointer" onclick="closeBulkDeleteModal()">Batal</button>
+                <button type="button" id="confirmBulkDeleteBtn" class="bg-red-700 text-white px-4 py-2 rounded cursor-pointer">Hapus</button>
             </div>
         </div>
     </div>
 
     <div id="imagePreviewModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50">
     <div class="relative bg-white rounded-xl p-2 max-w-xl w-full shadow-lg">
-        <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl z-10">
+        <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl z-10 cursor-pointer">
             <i class="fas fa-times"></i>
         </button>
         <img id="previewImage" src="" class="max-h-[70vh] w-auto mx-auto rounded-lg object-contain" />
