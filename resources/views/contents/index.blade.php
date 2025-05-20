@@ -173,6 +173,7 @@
         </div>
     </div>
 
+    <!-- Image Preview Modal -->
     <div id="imagePreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white p-4 rounded-xl max-w-4xl w-full relative">
             <button onclick="closeImagePreview()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
@@ -182,6 +183,7 @@
         </div>
     </div>
 
+    <!-- Video Preview Modal -->
     <div id="videoPreviewModal" class="fixed inset-0 bg-black/50 bg-opacity-50 hidden items-center justify-center z-50">
         <div class="bg-white p-4 rounded-xl max-w-4xl w-full relative">
             <button onclick="closeVideoPreview()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
@@ -194,90 +196,64 @@
         </div>
     </div>
 
-    <script>
-        const modal = document.getElementById('editModal');
-        
-        document.querySelectorAll('.content-row').forEach(row => {
-            row.addEventListener('click', () => {
-                const id = row.getAttribute('data-id');
-                openEditModal(id);
-            });
+
+<script>
+    const modal = document.getElementById('editModal');
+    
+    document.querySelectorAll('.content-row').forEach(row => {
+        row.addEventListener('click', () => {
+            const id = row.getAttribute('data-id');
+            openEditModal(id);
         });
+    });
 
-        document.querySelectorAll('.delete-content').forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = button.getAttribute('data-id');
-                openDeleteModal(id);
-            });
+    document.querySelectorAll('.delete-content').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = button.getAttribute('data-id');
+            openDeleteModal(id);
         });
+    });
 
-        function openEditModal(id) {
-        fetch(`/contents/${id}`)
-            .then(res => res.json())
-            .then(data => {
-                console.log("Data dari server:", data);
-                document.getElementById('contentId').value = data.id;
-                document.getElementById('editName').value = data.name;
-                document.getElementById('editSatuan').value = data.satuan;
-                document.getElementById('editPilar').value = data.pilar;
-                document.getElementById('editJudul').value = data.judul;
-                document.getElementById('editDeskripsi').value = data.deskripsi;
-                document.getElementById('editStatus').checked = data.status;
+    function openEditModal(id) {
+    fetch(`/contents/${id}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log("Data dari server:", data);
+            document.getElementById('contentId').value = data.id;
+            document.getElementById('editName').value = data.name;
+            document.getElementById('editSatuan').value = data.satuan;
+            document.getElementById('editPilar').value = data.pilar;
+            document.getElementById('editJudul').value = data.judul;
+            document.getElementById('editDeskripsi').value = data.deskripsi;
+            document.getElementById('editStatus').checked = data.status;
 
-                const mediaGrid = document.getElementById('mediaGrid');
-                mediaGrid.innerHTML = '';
-                
-                if (data.media && data.media.length > 0) {
-                    data.media.forEach(media => {
-                        const mediaElement = document.createElement('div');
-                        mediaElement.className = 'bg-gray-100 p-2 rounded flex flex-col items-center relative group';
-                        
-                        // Determine file type and display accordingly
-                        const fileExt = media.file_path.split('.').pop().toLowerCase();
-                        let previewContent = '';
-                        
-                        if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExt)) {
-                            previewContent = `<img src="/storage/${media.file_path}" 
-                                alt="" 
-                                class="h-20 w-full object-contain cursor-pointer previewable" 
-                                data-src="/storage/${media.file_path}">`;                    
+            const mediaGrid = document.getElementById('mediaGrid');
+            mediaGrid.innerHTML = '';
+            
+            if (data.media && data.media.length > 0) {
+                data.media.forEach(media => {
+                    const mediaElement = document.createElement('div');
+                    mediaElement.className = 'bg-gray-100 p-2 rounded flex flex-col items-center relative group';
                     
-                        } else if (fileExt === 'mp4' || fileExt === 'webm') {
-                            previewContent = `
-                                <video class="h-20 w-full previewable cursor-pointer" data-src="/storage/${media.file_path}" data-type="video">
-                                    <source src="/storage/${media.file_path}" type="video/${fileExt}">
-                                    Browser tidak mendukung video.
-                                </video>
-                            `;
-                        } else if (fileExt === 'pdf') {
-                            previewContent = `
-                                <div class="h-20 w-full flex items-center justify-center bg-white">
-                                    <i class="fas fa-file-pdf text-4xl text-red-500"></i>
-                                </div>
-                            `;
-                        } else {
-                            previewContent = `
-                                <div class="h-20 w-full flex items-center justify-center bg-white">
-                                    <i class="fas fa-file text-4xl text-gray-500"></i>
-                                </div>
-                            `;
-                        }
-                        
-                        mediaElement.innerHTML = `
-                            ${previewContent}
-                            <a href="/storage/${media.file_path}" 
-                            download="${media.file_path.split('/').pop()}"
-                            class="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                                <i class="fas fa-download text-xs"></i>
-                            </a>
-                        `;                    
+                    // Determine file type and display accordingly
+                    const fileExt = media.file_path.split('.').pop().toLowerCase();
+                    let previewContent = '';
                     
-                        mediaGrid.appendChild(mediaElement);
-                    });
-                } else {
-                    mediaGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">Tidak ada media</div>';
-                }
+                    if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExt)) {
+                        previewContent = `<img src="/storage/${media.file_path}" 
+                            alt="" 
+                            class="h-20 w-full object-contain cursor-pointer previewable" 
+                            data-src="/storage/${media.file_path}">`;                    
+                    
+                    } else if (['mp4', 'mov'].includes(fileExt)) {
+                        previewContent = `
+                            <video class="h-20 w-full previewable cursor-pointer" data-src="/storage/${media.file_path}" data-type="video">
+                                <source src="/storage/${media.file_path}" type="video/${fileExt}">
+                                Browser tidak mendukung video.
+                            </video>
+                        `;
+                    } else if (fileExt === 'pdf') {
                         previewContent = `
                             <div class="h-20 w-full flex items-center justify-center bg-white">
                                 <i class="fas fa-file-pdf text-4xl text-red-500"></i>
