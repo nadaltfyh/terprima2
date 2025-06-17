@@ -73,7 +73,6 @@
                 @foreach($contents as $content)
                 <tr class="border-t border-gray-100 hover:bg-gray-50 cursor-pointer content-row" data-id="{{ $content->id }}">
                     <td class="p-2" onclick="event.stopPropagation()">
-                        <!-- Changed: Remove the status check from checkbox, this is only for selection -->
                         <input type="checkbox" class="content-checkbox" value="{{ $content->id }}">
                     </td>
                     <td class="p-2">{{ $content->name }}</td>
@@ -202,7 +201,6 @@
         });
     });
 
-    // Handle individual delete button clicks
     document.querySelectorAll('.delete-content').forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -232,7 +230,6 @@
                     const mediaElement = document.createElement('div');
                     mediaElement.className = 'bg-gray-100 p-2 rounded flex flex-col items-center relative group';
                     
-                    // Determine file type and display accordingly
                     const fileExt = media.file_path.split('.').pop().toLowerCase();
                     let previewContent = '';
                     
@@ -297,9 +294,7 @@
     const formData = new FormData(this);
     const id = document.getElementById('contentId').value;
     
-    // Add CSRF token to formData instead of headers - this is important for multipart/form-data
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    // Make sure we're not adding duplicate tokens if the form already has a CSRF field
     if (!formData.has('_token')) {
         formData.append('_token', token);
     }
@@ -307,7 +302,6 @@
     fetch(`/contents/${id}/update`, {
         method: 'POST',
         body: formData
-        // Don't set Content-Type header when sending FormData - the browser will set it automatically with proper boundaries
     })
     .then(response => {
         if (!response.ok) {
@@ -318,7 +312,7 @@
     .then(data => {
         if (data.success) {
             closeModal();
-            window.location.reload(); // Reload the page after successful update
+            window.location.reload(); 
         } else {
             alert('Update failed: ' + (data.message || 'Unknown error'));
         }
@@ -329,13 +323,11 @@
     });
 });
 
-    // Download ZIP functionality
     document.getElementById('downloadZipBtn').addEventListener('click', function() {
         const contentId = document.getElementById('contentId').value;
         window.location.href = `/contents/${contentId}/download-media`;
     });
 
-    // Delete confirmation modal functions
     function openDeleteModal(id) {
         const deleteModal = document.getElementById('deleteConfirmModal');
         deleteModal.classList.remove('hidden');
@@ -352,9 +344,7 @@
         deleteModal.classList.remove('flex');
     }
 
-    // Fixed delete function to handle errors and properly handle the CSRF token
     function deleteContent(id) {
-        // Get the CSRF token
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
         if (!token) {
@@ -380,7 +370,7 @@
         .then(data => {
             if (data.success) {
                 closeDeleteModal();
-                window.location.reload(); // Reload the page after successful delete
+                window.location.reload(); 
             } else {
                 alert('Failed to delete content: ' + (data.message || 'Unknown error'));
             }
@@ -391,7 +381,6 @@
         });
     }
 
-    // Bulk action functionality
     document.getElementById('selectAll').addEventListener('change', function() {
         const isChecked = this.checked;
         document.querySelectorAll('.content-checkbox').forEach(checkbox => {
@@ -427,9 +416,7 @@
         bulkDeleteModal.classList.remove('flex');
     }
 
-    // Fixed bulk delete function to properly handle errors
     function bulkDeleteContents(ids) {
-        // Get the CSRF token
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
         if (!token) {
@@ -456,7 +443,7 @@
         .then(data => {
             if (data.success) {
                 closeBulkDeleteModal();
-                window.location.reload(); // Reload the page after successful bulk delete
+                window.location.reload(); 
             } else {
                 alert('Failed to delete contents: ' + (data.message || 'Unknown error'));
             }
@@ -489,7 +476,7 @@
                 const previewModal = document.getElementById('videoPreviewModal');
                 const previewVideo = document.getElementById('previewVideo');
                 previewVideo.querySelector('source').src = src;
-                previewVideo.load(); // Reload video with new source
+                previewVideo.load(); 
                 previewModal.classList.remove('hidden');
                 previewModal.classList.add('flex');
             } else {

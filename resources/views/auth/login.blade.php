@@ -10,12 +10,10 @@
 </head>
 <body class="relative">
     <div class="flex flex-col lg:flex-row min-h-screen">
-        <!-- Header for mobile -->
         <div class="block lg:hidden">
             <img src="{{ asset('img/header.png') }}" alt="Header TerPRIMA" class="w-full">
         </div>
 
-        <!-- Form section -->
         <div class="lg:w-1/2 w-full bg-white p-6 lg:p-10 flex items-center justify-center">
             <div class="w-full max-w-md">
 
@@ -64,7 +62,6 @@
             </div>
         </div>
 
-        <!-- Background section - hidden on mobile -->
         <div class="lg:w-1/2 w-full bg-center bg-cover text-white flex-col justify-between p-10 hidden lg:flex" 
             style="background-image: url('{{ asset('img/bg_login.png') }}');"></div>
     </div>

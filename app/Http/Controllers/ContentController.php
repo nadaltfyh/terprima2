@@ -71,21 +71,16 @@ class ContentController extends Controller
         
             $content = Content::findOrFail($id);
             
-            // Handle status checkbox dengan lebih lengkap
-            // Fungsi ini memeriksa semua nilai yang mungkin dari checkbox
-            $status = false; // nilai default
+            $status = false; 
             
             if ($request->has('status')) {
                 $statusValue = $request->status;
-                // Kemungkinan nilai checkbox: "on", 1, "1", true, "true"
                 if (in_array($statusValue, ['on', 1, '1', true, 'true'], true)) {
                     $status = true;
                 }
-                // Log nilai status yang diterima untuk debugging
                 Log::info('Status value received: ' . var_export($statusValue, true));
             }
             
-            // Log status final untuk memastikan nilainya benar
             Log::info('Final status set to: ' . ($status ? '1' : '0'));
             
             $content->name = $request->name;
@@ -233,7 +228,6 @@ class ContentController extends Controller
                 $mediaPath = storage_path('app/public/' . $media->file_path);
                 
                 if (file_exists($mediaPath)) {
-                    // Get the original filename from the path
                     $originalFileName = basename($media->file_path);
                     $zip->addFile($mediaPath, $originalFileName);
                 }

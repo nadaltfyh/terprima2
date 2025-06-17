@@ -22,14 +22,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    /**
-     * Handle the login request
-     */
-    /**
-     * Hardcoded admin credentials
-     * Username: Admin
-     * Password: 12345
-     */
     private const ADMIN_CREDENTIALS = [
         'name' => 'Admin',
         'password' => '12345'
@@ -42,11 +34,9 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Check for admin credentials first
         if ($request->name === self::ADMIN_CREDENTIALS['name'] && 
             $request->password === self::ADMIN_CREDENTIALS['password']) {
             
-            // Find or create admin user
             $admin = User::firstOrCreate(
                 ['name' => self::ADMIN_CREDENTIALS['name']],
                 [
@@ -59,7 +49,6 @@ class AuthController extends Controller
             return redirect()->intended('/dashboard');
         }
 
-        // Try normal authentication for other users
         if (!Auth::attempt($request->only('name', 'password'))) {
             throw ValidationException::withMessages([
                 'name' => ['Nama atau kata sandi tidak valid.'],
