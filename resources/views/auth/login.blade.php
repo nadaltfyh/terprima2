@@ -21,7 +21,7 @@
 
                 
                 <h2 class="text-2xl font-bold text-gray-800 mb-6 text-left">Selamat Datang</h2>
-                <p class="mb-10 text-gray-600 text-left">Silahkan masukkan nama dan NRP</p>
+                <p class="mb-10 text-gray-600 text-left">Silahkan masukkan nama dan kata sandi</p>
 
                 @if ($errors->any())
                 <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 text-left" role="alert">
