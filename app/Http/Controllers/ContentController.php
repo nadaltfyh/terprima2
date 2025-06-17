@@ -142,7 +142,10 @@ class ContentController extends Controller
 
     public function completed()
     {
-        $contents = Content::with('media')->where('status', true)->paginate(10);
+        $contents = Content::with('media')
+            ->where('status', true)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('contents.completed', compact('contents'));
     }
 
